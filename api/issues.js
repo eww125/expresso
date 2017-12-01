@@ -1,16 +1,16 @@
 const express = require('express');
-const issuesRouter = express.Router({mergeParams: true});
+const timesheetsRouter = express.Router({mergeParams: true});
 
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
-issuesRouter.param('issueId', (req, res, next, issueId) => {
-  const sql = 'SELECT * FROM Issue WHERE Issue.id = $issueId';
-  const values = {$issueId: issueId};
-  db.get(sql, values, (error, issue) => {
+timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
+  const sql = 'SELECT * FROM Timesheet WHERE Timesheet.id = $timesheetId';
+  const values = {$timesheetId: timesheetId};
+  db.get(sql, values, (error, timesheet) => {
     if (error) {
       next(error);
-    } else if (issue) {
+    } else if (timesheet) {
       next();
     } else {
       res.sendStatus(404);
@@ -18,38 +18,38 @@ issuesRouter.param('issueId', (req, res, next, issueId) => {
   });
 });
 
-issuesRouter.get('/', (req, res, next) => {
-  const sql = 'SELECT * FROM Issue WHERE Issue.menu_id = $menuId';
+timesheetsRouter.get('/', (req, res, next) => {
+  const sql = 'SELECT * FROM Timesheet WHERE Timesheet.menu_id = $menuId';
   const values = { $menuId: req.params.menuId};
-  db.all(sql, values, (error, issues) => {
+  db.all(sql, values, (error, timesheets) => {
     if (error) {
       next(error);
     } else {
-      res.status(200).json({issues: issues});
+      res.status(200).json({timesheets: timesheets});
     }
   });
 });
 
-issuesRouter.post('/', (req, res, next) => {
-  const name = req.body.issue.name,
-        issueNumber = req.body.issue.issueNumber,
-        publicationDate = req.body.issue.publicationDate,
-        employeeId = req.body.issue.employeeId;
+timesheetsRouter.post('/', (req, res, next) => {
+  const name = req.body.timesheet.name,
+        timesheetNumber = req.body.timesheet.timesheetNumber,
+        publicationDate = req.body.timesheet.publicationDate,
+        employeeId = req.body.timesheet.employeeId;
   const artistSql = 'SELECT * FROM Employee WHERE Employee.id = $EmployeeId';
   const employeeValues = {$employeeId: employeeId};
   db.get(employeeSql, employeeValues, (error, employee) => {
     if (error) {
       next(error);
     } else {
-      if (!name || !issueNumber || !publicationDate || !artist) {
+      if (!name || !timesheetNumber || !publicationDate || !artist) {
         return res.sendStatus(400);
       }
 
-      const sql = 'INSERT INTO Issue (name, issue_number, publication_date, employee_id, menu_id)' +
-          'VALUES ($name, $issueNumber, $publicationDate, $employeeId, $menuId)';
+      const sql = 'INSERT INTO Timesheet (name, timesheet_number, publication_date, employee_id, menu_id)' +
+          'VALUES ($name, $timesheetNumber, $publicationDate, $employeeId, $menuId)';
       const values = {
         $name: name,
-        $issueNumber: issueNumber,
+        $timesheetNumber: timesheetNumber,
         $publicationDate: publicationDate,
         $employeeId: employeeId,
         $menuId: req.params.menuId
@@ -59,9 +59,9 @@ issuesRouter.post('/', (req, res, next) => {
         if (error) {
           next(error);
         } else {
-          db.get(`SELECT * FROM Issue WHERE Issue.id = ${this.lastID}`,
-            (error, issue) => {
-              res.status(201).json({issue: issue});
+          db.get(`SELECT * FROM Timesheet WHERE Timesheet.id = ${this.lastID}`,
+            (error, timesheet) => {
+              res.status(201).json({timesheet: timesheet});
             });
         }
       });
@@ -69,39 +69,39 @@ issuesRouter.post('/', (req, res, next) => {
   });
 });
 
-issuesRouter.put('/:issueId', (req, res, next) => {
-  const name = req.body.issue.name,
-        issueNumber = req.body.issue.issueNumber,
-        publicationDate = req.body.issue.publicationDate,
-        artistId = req.body.issue.artistId;
+timesheetsRouter.put('/:timesheetId', (req, res, next) => {
+  const name = req.body.timesheet.name,
+        timesheetNumber = req.body.timesheet.timesheetNumber,
+        publicationDate = req.body.timesheet.publicationDate,
+        artistId = req.body.timesheet.artistId;
   const employeeSql = 'SELECT * FROM Employee WHERE Employee.id = $employeeId';
   const employeeValues = {$employeeId: employeeId};
   db.get(employeeSql, employeeValues, (error, employee) => {
     if (error) {
       next(error);
     } else {
-      if (!name || !issueNumber || !publicationDate || !employee) {
+      if (!name || !timesheetNumber || !publicationDate || !employee) {
         return res.sendStatus(400);
       }
 
-      const sql = 'UPDATE Issue SET name = $name, issue_number = $issueNumber, ' +
+      const sql = 'UPDATE Timesheet SET name = $name, timesheet_number = $timesheetNumber, ' +
           'publication_date = $publicationDate, employee_id = $employeeId ' +
-          'WHERE Issue.id = $issueId';
+          'WHERE Timesheet.id = $timesheetId';
       const values = {
         $name: name,
-        $issueNumber: issueNumber,
+        $timesheetNumber: timesheetNumber,
         $publicationDate: publicationDate,
         $employeeId: employeeId,
-        $issueId: req.params.issueId
+        $timesheetId: req.params.timesheetId
       };
 
       db.run(sql, values, function(error) {
         if (error) {
           next(error);
         } else {
-          db.get(`SELECT * FROM Issue WHERE Issue.id = ${req.params.issueId}`,
-            (error, issue) => {
-              res.status(200).json({issue: issue});
+          db.get(`SELECT * FROM Timesheet WHERE Timesheet.id = ${req.params.timesheetId}`,
+            (error, timesheet) => {
+              res.status(200).json({timesheet: timesheet});
             });
         }
       });
@@ -109,9 +109,9 @@ issuesRouter.put('/:issueId', (req, res, next) => {
   });
 });
 
-issuesRouter.delete('/:issueId', (req, res, next) => {
-  const sql = 'DELETE FROM Issue WHERE Issue.id = $issueId';
-  const values = {$issueId: req.params.issueId};
+timesheetsRouter.delete('/:timesheetId', (req, res, next) => {
+  const sql = 'DELETE FROM Timesheet WHERE Timesheet.id = $timesheetId';
+  const values = {$timesheetId: req.params.timesheetId};
 
   db.run(sql, values, (error) => {
     if (error) {
@@ -122,4 +122,4 @@ issuesRouter.delete('/:issueId', (req, res, next) => {
   });
 });
 
-module.exports = issuesRouter;
+module.exports = timesheetsRouter;
