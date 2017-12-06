@@ -9,8 +9,8 @@ db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='Employee'", 
   if (table) {
     db.serialize(function() {
       let employeeId;
-      db.run("INSERT INTO Employee (name, position, wage) VALUES ('Employee 1', 'Manager', 10)");
-      db.run("INSERT INTO Employee (name, position, wage) VALUES ('Employee 2', 'Employee', 15)", function(error) {
+      db.run("INSERT INTO Employee (name, position, wage) VALUES ('Lilly', 'Manager', 10)");
+      db.run("INSERT INTO Employee (name, position, wage) VALUES ('Ivone', 'Employee', 15)", function(error) {
         if (error) {
           throw new Error(error);
         }
@@ -59,4 +59,3 @@ db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='Menu'", (err
     });
   }
 });
-
