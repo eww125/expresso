@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 employeesRouter.param('employeeId', (req, res, next, employeeId) => {
-  console.log('made it to employeesRouter.param')
+  console.log('made it to employeesRouter.param employeeId')
   const sql = 'SELECT * FROM Employee WHERE Employee.id = $employeeId';
   const values = {$employeeId: employeeId};
   db.get(sql, values, (error, employee) => {
@@ -38,7 +38,7 @@ employeesRouter.get('/:employeeId', (req, res, next) => {
 });
 
 employeesRouter.post('/', (req, res, next) => {
-  console.log('made it to employeesRouter.post')
+  console.log('made it to employeesRouter.post/')
   const name = req.body.employee.name,
         position = req.body.employee.position,
         wage = req.body.employee.wage,

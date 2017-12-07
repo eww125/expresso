@@ -7,6 +7,7 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
+  console.log('made it to timesheetsRouter.param timesheetId')
   const sql = 'SELECT * FROM Timesheet WHERE Timesheet.id = $timesheetId';
   const values = {$timesheetId: timesheetId};
   db.get(sql, values, (error, timesheet) => {
@@ -21,7 +22,7 @@ timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
 });
 
 timesheetsRouter.get('/', (req, res, next) => {
-  console.log('made it to timesheetsRouter.get')
+  console.log('made it to timesheetsRouter.get/')
   const sql = 'SELECT * FROM Timesheet WHERE Timesheet.menu_id = $menuId';
   const values = { $menuId: req.params.menuId};
   db.all(sql, values, (error, timesheets) => {
@@ -34,7 +35,7 @@ timesheetsRouter.get('/', (req, res, next) => {
 });
 
 timesheetsRouter.post('/', (req, res, next) => {
-  console.log('made it to timesheetsRouter.post')
+  console.log('made it to timesheetsRouter.post/')
   const name = req.body.timesheet.name,
         timesheetNumber = req.body.timesheet.timesheetNumber,
         publicationDate = req.body.timesheet.publicationDate,
@@ -74,6 +75,7 @@ timesheetsRouter.post('/', (req, res, next) => {
 });
 
 timesheetsRouter.put('/:timesheetId', (req, res, next) => {
+  console.log('made it to timesheetsRouter.put/:timesheetId')
   const name = req.body.timesheet.name,
         timesheetNumber = req.body.timesheet.timesheetNumber,
         publicationDate = req.body.timesheet.publicationDate,
@@ -114,6 +116,7 @@ timesheetsRouter.put('/:timesheetId', (req, res, next) => {
 });
 
 timesheetsRouter.delete('/:timesheetId', (req, res, next) => {
+  console.log('made it to timesheetsRouter.delete/:timesheetId')
   const sql = 'DELETE FROM Timesheet WHERE Timesheet.id = $timesheetId';
   const values = {$timesheetId: req.params.timesheetId};
 

@@ -7,6 +7,7 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 menu_itemsRouter.param('menu_itemId', (req, res, next, menu_itemId) => {
+  console.log('made it to menu_itemsRouter.param menu_itemId')
   const sql = 'SELECT * FROM MenuItem WHERE MenuItem.id = $menu_itemId';
   const values = {$menu_itemId: menu_itemId};
   db.get(sql, values, (error, menu_item) => {
@@ -20,9 +21,8 @@ menu_itemsRouter.param('menu_itemId', (req, res, next, menu_itemId) => {
   });
 });
 
-
-
 menu_itemsRouter.get('/', (req, res, next) => {
+  console.log('made it to menu_itemsRouter.get/')
   const sql = 'SELECT * FROM MenuItem WHERE MenuItem.menu_id = $menuId';
   const values = { $menuId: req.params.menuId};
   db.all(sql, values, (error, menu_items) => {
@@ -35,6 +35,7 @@ menu_itemsRouter.get('/', (req, res, next) => {
 });
 
 menu_itemsRouter.post('/', (req, res, next) => {
+  console.log('made it to menu_itemsRouter.post/')
   const name = req.body.menu_item.name,
         menu_itemNumber = req.body.menu_item.menu_itemNumber,
         publicationDate = req.body.menu_item.publicationDate,
@@ -74,6 +75,7 @@ menu_itemsRouter.post('/', (req, res, next) => {
 });
 
 menu_itemsRouter.put('/:menu_itemId', (req, res, next) => {
+  console.log('made it to menu_itemsRouter.put/:menu_itemId')
   const name = req.body.menu_item.name,
         menu_itemNumber = req.body.menu_item.menu_itemNumber,
         publicationDate = req.body.menu_item.publicationDate,
@@ -114,6 +116,7 @@ menu_itemsRouter.put('/:menu_itemId', (req, res, next) => {
 });
 
 menu_itemsRouter.delete('/:menu_itemId', (req, res, next) => {
+  console.log('made it to menu_itemsRouter.delete/:menu_itemId')
   const sql = 'DELETE FROM MenuItem WHERE MenuItem.id = $menu_itemId';
   const values = {$menu_itemId: req.params.menu_itemId};
 
