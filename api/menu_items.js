@@ -1,3 +1,5 @@
+console.log('made it to menu_items.js')
+
 const express = require('express');
 const menu_itemsRouter = express.Router({mergeParams: true});
 
@@ -17,6 +19,8 @@ menu_itemsRouter.param('menu_itemId', (req, res, next, menu_itemId) => {
     }
   });
 });
+
+
 
 menu_itemsRouter.get('/', (req, res, next) => {
   const sql = 'SELECT * FROM MenuItem WHERE MenuItem.menu_id = $menuId';

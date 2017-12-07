@@ -1,10 +1,15 @@
+console.log('made it to menus.js')
+
 const express = require('express');
 const menusRouter = express.Router();
 
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
+const menu_itemsRouter = require('./menu_items.js');
+
 menusRouter.param('menuId', (req, res, next, menuId) => {
+  console.log('made it to menusRouter.param')
   const sql = 'SELECT * FROM Menu WHERE Menu.id = $menuId';
   const values = {$menuId: menuId};
   db.get(sql, values, (error, menu) => {
@@ -19,8 +24,10 @@ menusRouter.param('menuId', (req, res, next, menuId) => {
   });
 });
 
+menu_itemsRouter.use('/:menuId/menu_items', menu_itemsRouter);
+
 menusRouter.get('/', (req, res, next) => {
-  console.log('menusRouter.get/')
+  console.log('made it to menusRouter.get')
   db.all('SELECT * FROM Menu',
     (err, menus) => {
       if (err) {
@@ -32,11 +39,12 @@ menusRouter.get('/', (req, res, next) => {
 });
 
 menusRouter.get('/:menuId', (req, res, next) => {
-  console.log('menusRouter.get/:menuId')
+  console.log('made it to menusRouter.get/:menuId')
   res.status(200).json({menu: req.menu});
 });
 
 menusRouter.post('/', (req, res, next) => {
+  console.log('made it to menusRouter.post/')
   console.log('menusRouter.post/')
   const title = req.body.menu.title
   if (!title) {
@@ -62,6 +70,7 @@ menusRouter.post('/', (req, res, next) => {
 });
 
 menusRouter.put('/:menuId', (req, res, next) => {
+  console.log('made it to menusRouter.put:/menuId')
   console.log('menusRouter.put/')
   console.log('menuId=' + req.params.menuId)
   const title = req.body.menu.title
@@ -89,6 +98,7 @@ menusRouter.put('/:menuId', (req, res, next) => {
 });
 
 menusRouter.delete('/:menuId', (req, res, next) => {
+  console.log('made it to menusRouter.delete/:menuId')
   const sql = 'UPDATE Menu SET id = 0 WHERE Menu.id = $menuId';
   const values = {$menuId: req.params.menuId};
 

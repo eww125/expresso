@@ -1,3 +1,5 @@
+console.log('made it to timesheets.js')
+
 const express = require('express');
 const timesheetsRouter = express.Router({mergeParams: true});
 
@@ -19,6 +21,7 @@ timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
 });
 
 timesheetsRouter.get('/', (req, res, next) => {
+  console.log('made it to timesheetsRouter.get')
   const sql = 'SELECT * FROM Timesheet WHERE Timesheet.menu_id = $menuId';
   const values = { $menuId: req.params.menuId};
   db.all(sql, values, (error, timesheets) => {
@@ -31,6 +34,7 @@ timesheetsRouter.get('/', (req, res, next) => {
 });
 
 timesheetsRouter.post('/', (req, res, next) => {
+  console.log('made it to timesheetsRouter.post')
   const name = req.body.timesheet.name,
         timesheetNumber = req.body.timesheet.timesheetNumber,
         publicationDate = req.body.timesheet.publicationDate,

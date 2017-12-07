@@ -5,6 +5,7 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 employeesRouter.param('employeeId', (req, res, next, employeeId) => {
+  console.log('made it to employeesRouter.param')
   const sql = 'SELECT * FROM Employee WHERE Employee.id = $employeeId';
   const values = {$employeeId: employeeId};
   db.get(sql, values, (error, employee) => {
@@ -20,6 +21,7 @@ employeesRouter.param('employeeId', (req, res, next, employeeId) => {
 });
 
 employeesRouter.get('/', (req, res, next) => {
+  console.log('made it to employeesRouter.get/')
   db.all('SELECT * FROM Employee WHERE Employee.is_current_employee = 1',
     (err, employees) => {
       if (err) {
@@ -31,10 +33,12 @@ employeesRouter.get('/', (req, res, next) => {
 });
 
 employeesRouter.get('/:employeeId', (req, res, next) => {
+  console.log('made it to employeesRouter.get/:employeeId')
   res.status(200).json({employee: req.employee});
 });
 
 employeesRouter.post('/', (req, res, next) => {
+  console.log('made it to employeesRouter.post')
   const name = req.body.employee.name,
         position = req.body.employee.position,
         wage = req.body.employee.wage,
@@ -65,6 +69,7 @@ employeesRouter.post('/', (req, res, next) => {
 });
 
 employeesRouter.put('/:employeeId', (req, res, next) => {
+  console.log('made it to employeesRouter.put/:employeeId')
   const name = req.body.employee.name,
         position = req.body.employee.position,
         wage = req.body.employee.wage,
@@ -97,6 +102,7 @@ employeesRouter.put('/:employeeId', (req, res, next) => {
 });
 
 employeesRouter.delete('/:employeeId', (req, res, next) => {
+  console.log('made it to employeesRouter.delete/:employeeId')
   const sql = 'UPDATE Employee SET is_current_employee = 0 WHERE Employee.id = $employeeId';
   const values = {$employeeId: req.params.employeeId};
 
