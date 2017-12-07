@@ -1,5 +1,3 @@
-console.log('made it to menu_items.js')
-
 const express = require('express');
 const menu_itemsRouter = express.Router({mergeParams: true});
 

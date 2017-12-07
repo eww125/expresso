@@ -1,5 +1,3 @@
-console.log('made it to timesheets.js')
-
 const express = require('express');
 const timesheetsRouter = express.Router({mergeParams: true});
 
@@ -23,8 +21,8 @@ timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
 
 timesheetsRouter.get('/', (req, res, next) => {
   console.log('made it to timesheetsRouter.get/')
-  const sql = 'SELECT * FROM Timesheet WHERE Timesheet.menu_id = $menuId';
-  const values = { $menuId: req.params.menuId};
+  const sql = 'SELECT * FROM Timesheet WHERE Timesheet.employee_id = $employeeId';
+  const values = { $employeeId: req.params.employeeId};
   db.all(sql, values, (error, timesheets) => {
     if (error) {
       next(error);
@@ -36,28 +34,28 @@ timesheetsRouter.get('/', (req, res, next) => {
 
 timesheetsRouter.post('/', (req, res, next) => {
   console.log('made it to timesheetsRouter.post/')
-  const name = req.body.timesheet.name,
-        timesheetNumber = req.body.timesheet.timesheetNumber,
-        publicationDate = req.body.timesheet.publicationDate,
+  const hours = req.body.timesheet.hours,
+        rate = req.body.timesheet.rate,
+        date = req.body.timesheet.date,
         employeeId = req.body.timesheet.employeeId;
-  const artistSql = 'SELECT * FROM Employee WHERE Employee.id = $EmployeeId';
+  const employeeSql = 'SELECT * FROM Employee WHERE Employee.id = $employeeId';
   const employeeValues = {$employeeId: employeeId};
   db.get(employeeSql, employeeValues, (error, employee) => {
     if (error) {
       next(error);
     } else {
-      if (!name || !timesheetNumber || !publicationDate || !artist) {
+      if (!hours || !rate || !date || !employee) {
         return res.sendStatus(400);
       }
 
-      const sql = 'INSERT INTO Timesheet (name, timesheet_number, publication_date, employee_id, menu_id)' +
-          'VALUES ($name, $timesheetNumber, $publicationDate, $employeeId, $menuId)';
+      const sql = 'INSERT INTO Timesheet (hours, rate, date, employee_id)' +
+          'VALUES ($hours, $rate, $date, $employeeId)';
       const values = {
-        $name: name,
-        $timesheetNumber: timesheetNumber,
-        $publicationDate: publicationDate,
+        $hours: hours,
+        $rate: rate,
+        $date: date,
         $employeeId: employeeId,
-        $menuId: req.params.menuId
+        //$menuId: req.params.menuId
       };
 
       db.run(sql, values, function(error) {

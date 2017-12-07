@@ -1,5 +1,3 @@
-console.log('made it to menus.js')
-
 const express = require('express');
 const menusRouter = express.Router();
 
@@ -10,8 +8,15 @@ const menu_itemsRouter = require('./menu_items.js');
 
 menusRouter.param('menuId', (req, res, next, menuId) => {
   console.log('made it to menusRouter.param menuId')
+  //console.log('menuId=' + menuId)
+  //console.log('Object.keys(req)=' + Object.keys(req))
+  //console.log(next)
   const sql = 'SELECT * FROM Menu WHERE Menu.id = $menuId';
   const values = {$menuId: menuId};
+  //console.log('sql=' + sql)
+  //console.log('values=' + values)
+  //console.log('Object.keys(values)=' + Object.keys(values))
+  //console.log('values.$menuId=' + values.$menuId)
   db.get(sql, values, (error, menu) => {
     if (error) {
       next(error);
@@ -24,7 +29,7 @@ menusRouter.param('menuId', (req, res, next, menuId) => {
   });
 });
 
-menu_itemsRouter.use('/:menuId/menu_items', menu_itemsRouter);
+menusRouter.use('/:menuId/menu_items', menu_itemsRouter);
 
 menusRouter.get('/', (req, res, next) => {
   console.log('made it to menusRouter.get/')
