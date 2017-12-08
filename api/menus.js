@@ -7,7 +7,7 @@ const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite'
 const menu_itemsRouter = require('./menu_items.js');
 
 menusRouter.param('menuId', (req, res, next, menuId) => {
-  console.log('made it to menusRouter.param menuId')
+  //console.log('made it to menusRouter.param menuId')
   //console.log('menuId=' + menuId)
   //console.log('Object.keys(req)=' + Object.keys(req))
   //console.log(next)
@@ -32,7 +32,7 @@ menusRouter.param('menuId', (req, res, next, menuId) => {
 menusRouter.use('/:menuId/menu_items', menu_itemsRouter);
 
 menusRouter.get('/', (req, res, next) => {
-  console.log('made it to menusRouter.get/')
+  //console.log('made it to menusRouter.get/')
   db.all('SELECT * FROM Menu',
     (err, menus) => {
       if (err) {
@@ -44,13 +44,13 @@ menusRouter.get('/', (req, res, next) => {
 });
 
 menusRouter.get('/:menuId', (req, res, next) => {
-  console.log('made it to menusRouter.get/:menuId')
+  //console.log('made it to menusRouter.get/:menuId')
   res.status(200).json({menu: req.menu});
 });
 
 menusRouter.post('/', (req, res, next) => {
-  console.log('made it to menusRouter.post/')
-  console.log('menusRouter.post/')
+  //console.log('made it to menusRouter.post/')
+  //console.log('menusRouter.post/')
   const title = req.body.menu.title
   if (!title) {
     return res.sendStatus(400);
@@ -75,9 +75,9 @@ menusRouter.post('/', (req, res, next) => {
 });
 
 menusRouter.put('/:menuId', (req, res, next) => {
-  console.log('made it to menusRouter.put:/menuId')
-  console.log('menusRouter.put/')
-  console.log('menuId=' + req.params.menuId)
+  //console.log('made it to menusRouter.put:/menuId')
+  //console.log('menusRouter.put/')
+  //console.log('menuId=' + req.params.menuId)
   const title = req.body.menu.title
   if (!title) {
     return res.sendStatus(400);
@@ -103,7 +103,7 @@ menusRouter.put('/:menuId', (req, res, next) => {
 });
 
 menusRouter.delete('/:menuId', (req, res, next) => {
-  console.log('made it to menusRouter.delete/:menuId')
+  //console.log('made it to menusRouter.delete/:menuId')
   const sql = 'UPDATE Menu SET id = 0 WHERE Menu.id = $menuId';
   const values = {$menuId: req.params.menuId};
 

@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
-  console.log('made it to timesheetsRouter.param timesheetId')
+  //console.log('made it to timesheetsRouter.param timesheetId')
   const sql = 'SELECT * FROM Timesheet WHERE Timesheet.id = $timesheetId';
   const values = {$timesheetId: timesheetId};
   db.get(sql, values, (error, timesheet) => {
@@ -20,7 +20,7 @@ timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
 });
 
 timesheetsRouter.get('/', (req, res, next) => {
-  console.log('made it to timesheetsRouter.get/')
+  //console.log('made it to timesheetsRouter.get/')
   const sql = 'SELECT * FROM Timesheet WHERE Timesheet.employee_id = $employeeId';
   const values = { $employeeId: req.params.employeeId};
   db.all(sql, values, (error, timesheets) => {
@@ -33,7 +33,7 @@ timesheetsRouter.get('/', (req, res, next) => {
 });
 
 timesheetsRouter.post('/', (req, res, next) => {
-  console.log('made it to timesheetsRouter.post/')
+  //console.log('made it to timesheetsRouter.post/')
   const hours = req.body.timesheet.hours,
         rate = req.body.timesheet.rate,
         date = req.body.timesheet.date,
@@ -47,15 +47,19 @@ timesheetsRouter.post('/', (req, res, next) => {
       if (!hours || !rate || !date || !employee) {
         return res.sendStatus(400);
       }
-
-      const sql = 'INSERT INTO Timesheet (hours, rate, date, employee_id)' +
+  console.log('hours=' + hours)
+  console.log('rate=' + rate)
+  console.log('date=' + date)
+  console.log('employeeId=' + employeeId)
+      const sql = 'INSERT INTO Timesheet (hours, rate, date, employee_id) ' +
           'VALUES ($hours, $rate, $date, $employeeId)';
+  console.log('sql=' + sql)
       const values = {
         $hours: hours,
         $rate: rate,
         $date: date,
         $employeeId: employeeId,
-        //$menuId: req.params.menuId
+        $timesheetId: req.params.timesheetId
       };
 
       db.run(sql, values, function(error) {
@@ -73,28 +77,28 @@ timesheetsRouter.post('/', (req, res, next) => {
 });
 
 timesheetsRouter.put('/:timesheetId', (req, res, next) => {
-  console.log('made it to timesheetsRouter.put/:timesheetId')
-  const name = req.body.timesheet.name,
-        timesheetNumber = req.body.timesheet.timesheetNumber,
-        publicationDate = req.body.timesheet.publicationDate,
-        artistId = req.body.timesheet.artistId;
+  //console.log('made it to timesheetsRouter.put/:timesheetId')
+  const hours = req.body.timesheet.hours,
+        rate = req.body.timesheet.rate,
+        date = req.body.timesheet.date,
+        employeeId = req.body.timesheet.employeeId;
   const employeeSql = 'SELECT * FROM Employee WHERE Employee.id = $employeeId';
   const employeeValues = {$employeeId: employeeId};
   db.get(employeeSql, employeeValues, (error, employee) => {
     if (error) {
       next(error);
     } else {
-      if (!name || !timesheetNumber || !publicationDate || !employee) {
+      if (!hours || !rate || !date || !employee) {
         return res.sendStatus(400);
       }
 
-      const sql = 'UPDATE Timesheet SET name = $name, timesheet_number = $timesheetNumber, ' +
-          'publication_date = $publicationDate, employee_id = $employeeId ' +
+      const sql = 'UPDATE Timesheet SET hours = $hours, rate = $rate, ' +
+          'date = $date, employee_id = $employeeId ' +
           'WHERE Timesheet.id = $timesheetId';
       const values = {
-        $name: name,
-        $timesheetNumber: timesheetNumber,
-        $publicationDate: publicationDate,
+        $hours: hours,
+        $rate: rate,
+        $date: date,
         $employeeId: employeeId,
         $timesheetId: req.params.timesheetId
       };
@@ -114,7 +118,7 @@ timesheetsRouter.put('/:timesheetId', (req, res, next) => {
 });
 
 timesheetsRouter.delete('/:timesheetId', (req, res, next) => {
-  console.log('made it to timesheetsRouter.delete/:timesheetId')
+  //console.log('made it to timesheetsRouter.delete/:timesheetId')
   const sql = 'DELETE FROM Timesheet WHERE Timesheet.id = $timesheetId';
   const values = {$timesheetId: req.params.timesheetId};
 
