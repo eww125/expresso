@@ -969,14 +969,14 @@ describe('DELETE /api/menus/:id', function() {
   });
 });
 
-describe('GET /api/menus/:menuId/menu_items', function() {
+describe('GET /api/menus/:menuId/menu-items', function() {
   before(function(done) {
     seed.seedMenuItemDatabase(done);
   });
 
   it('should return all menu items of an existing menu', function() {
     return request(app)
-        .get('/api/menus/1/menu_items')
+        .get('/api/menus/1/menu-items')
         .then(function(response) {
           const menuItems = response.body.menuItems;
           expect(menuItems.length).to.equal(2);
@@ -987,7 +987,7 @@ describe('GET /api/menus/:menuId/menu_items', function() {
 
   it('should return an empty array for existing menus with no menu items', function() {
     return request(app)
-        .get('/api/menus/3/menu_items')
+        .get('/api/menus/3/menu-items')
         .then(function(response) {
           const menuItems = response.body.menuItems;
           expect(menuItems.length).to.equal(0);
@@ -996,18 +996,18 @@ describe('GET /api/menus/:menuId/menu_items', function() {
 
   it('should return a status code of 200 for valid menus', function() {
     return request(app)
-        .get('/api/menus/2/menu_items')
+        .get('/api/menus/2/menu-items')
         .expect(200);
   });
 
   it('should return a status code of 404 for invalid menus', function() {
     return request(app)
-        .get('/api/menus/999/menu_items')
+        .get('/api/menus/999/menu-items')
         .expect(404);
       });
 });
 
-describe('POST /api/menus/:menuId/menu_items', function() {
+describe('POST /api/menus/:menuId/menu-items', function() {
   let newMenuItem;
 
   beforeEach(function(done) {
@@ -1023,7 +1023,7 @@ describe('POST /api/menus/:menuId/menu_items', function() {
 
   it('should create a valid menuItem', function() {
     return request(app)
-        .post('/api/menus/2/menu_items')
+        .post('/api/menus/2/menu-items')
         .send({menuItem: newMenuItem})
         .then(function() {
           testDb.all('SELECT * FROM menuItem', function(error, result) {
@@ -1041,14 +1041,14 @@ describe('POST /api/menus/:menuId/menu_items', function() {
 
   it('should return a 201 status code after menu item creation', function() {
     return request(app)
-        .post('/api/menus/2/menu_items')
+        .post('/api/menus/2/menu-items')
         .send({menuItem: newMenuItem})
         .expect(201);
   });
 
   it('should return the newly-created menu item after menu item creation', function() {
     return request(app)
-        .post('/api/menus/2/menu_items')
+        .post('/api/menus/2/menu-items')
         .send({menuItem: newMenuItem})
         .then(function(response) {
           const menuItem = response.body.menuItem;
@@ -1070,13 +1070,13 @@ describe('POST /api/menus/:menuId/menu_items', function() {
     };
 
     return request(app)
-        .post('/api/menus/2/menu_items')
+        .post('/api/menus/2/menu-items')
         .send({menuItem: newMenuItem})
         .expect(400);
   });
 });
 
-describe('PUT /api/menus/:menuId/menu_items/:menuItemId', function() {
+describe('PUT /api/menus/:menuId/menu-items/:menuItemId', function() {
   let updatedMenuItem;
 
   beforeEach(function(done) {
@@ -1092,7 +1092,7 @@ describe('PUT /api/menus/:menuId/menu_items/:menuItemId', function() {
 
   it('should update the menu item with the given ID', function(done) {
     request(app)
-        .put('/api/menus/1/menu_items/2')
+        .put('/api/menus/1/menu-items/2')
         .send({menuItem: updatedMenuItem})
         .then(function() {
           testDb.get('SELECT * FROM MenuItem WHERE MenuItem.id = 2', function(error, menuItem) {
@@ -1112,14 +1112,14 @@ describe('PUT /api/menus/:menuId/menu_items/:menuItemId', function() {
 
   it('should return a 200 status code after menuItem update', function() {
     return request(app)
-        .put('/api/menus/1/menu_items/2')
+        .put('/api/menus/1/menu-items/2')
         .send({menuItem: updatedMenuItem})
         .expect(200);
   });
 
   it('should return the updated menu item after menu item update', function() {
     return request(app)
-        .put('/api/menus/1/menu_items/2')
+        .put('/api/menus/1/menu-items/2')
         .send({menuItem: updatedMenuItem})
         .then(function(response) {
           const menuItem = response.body.menuItem;
@@ -1140,7 +1140,7 @@ describe('PUT /api/menus/:menuId/menu_items/:menuItemId', function() {
     };
 
     return request(app)
-        .put('/api/menus/1/menu_items/999')
+        .put('/api/menus/1/menu-items/999')
         .send({menuItem: updatedMenuItem})
         .expect(404);
   });
@@ -1153,20 +1153,20 @@ describe('PUT /api/menus/:menuId/menu_items/:menuItemId', function() {
     };
 
     return request(app)
-        .put('/api/menus/1/menu_items/2')
+        .put('/api/menus/1/menu-items/2')
         .send({menuItem: updatedMenuItem})
         .expect(400);
   });
 });
 
-describe('DELETE /api/menus/:menuId/menu_items/:menuItemId', function() {
+describe('DELETE /api/menus/:menuId/menu-items/:menuItemId', function() {
   beforeEach(function(done) {
     seed.seedMenuItemDatabase(done);
   });
 
   it('should remove the menu item with the specified ID from the database', function(done) {
     request(app)
-        .del('/api/menus/1/menu_items/2')
+        .del('/api/menus/1/menu-items/2')
         .then(function() {
           testDb.get('SELECT * FROM MenuItem WHERE MenuItem.id = 2', function(error, menuItem) {
             if (error) {
@@ -1180,13 +1180,13 @@ describe('DELETE /api/menus/:menuId/menu_items/:menuItemId', function() {
 
   it('should return a 204 status code after menu item delete', function() {
     return request(app)
-        .del('/api/menus/1/menu_items/2')
+        .del('/api/menus/1/menu-items/2')
         .expect(204);
   });
 
   it('should return a 404 status code for invalid menu item IDs', function() {
     return request(app)
-        .del('/api/menus/1/menu_items/999')
+        .del('/api/menus/1/menu-items/999')
         .expect(404);
   });
 });
