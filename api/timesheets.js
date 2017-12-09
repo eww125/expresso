@@ -102,6 +102,7 @@ timesheetsRouter.put('/:timesheetId', (req, res, next) => {
         $employeeId: employeeId,
         $timesheetId: req.params.timesheetId
       };
+      console.log()
 
       db.run(sql, values, function(error) {
         if (error) {

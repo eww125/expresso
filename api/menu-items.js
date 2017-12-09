@@ -5,7 +5,8 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 menu_itemsRouter.param('menu_itemId', (req, res, next, menu_itemId) => {
-  //console.log('made it to menu_itemsRouter.param menu_itemId')
+  console.log('made it to menu_itemsRouter.param menu_itemId')
+  console.log('menu_itemId=' + menu_itemId)
   const sql = 'SELECT * FROM MenuItem WHERE MenuItem.id = $menu_itemId';
   const values = {$menu_itemId: menu_itemId};
   db.get(sql, values, (error, menu_item) => {
@@ -20,7 +21,8 @@ menu_itemsRouter.param('menu_itemId', (req, res, next, menu_itemId) => {
 });
 
 menu_itemsRouter.get('/', (req, res, next) => {
-  //console.log('made it to menu_itemsRouter.get/')
+  console.log('made it to menu_itemsRouter.get/')
+  console.log('req.params.menuId=' + req.params.menuId)
   const sql = 'SELECT * FROM MenuItem WHERE MenuItem.menu_id = $menuId';
   const values = { $menuId: req.params.menuId};
   db.all(sql, values, (error, menu_items) => {
@@ -35,27 +37,28 @@ menu_itemsRouter.get('/', (req, res, next) => {
 menu_itemsRouter.post('/', (req, res, next) => {
   //console.log('made it to menu_itemsRouter.post/')
   const name = req.body.menu_item.name,
-        menu_itemNumber = req.body.menu_item.menu_itemNumber,
-        publicationDate = req.body.menu_item.publicationDate,
-        employeeId = req.body.menu_item.employeeId;
-  const artistSql = 'SELECT * FROM Employee WHERE Employee.id = $EmployeeId';
-  const employeeValues = {$employeeId: employeeId};
-  db.get(employeeSql, employeeValues, (error, employee) => {
+        description = req.body.menu_item.description,
+        inventory = req.body.menu_item.inventory,
+        price = req.body.menu_item.price,
+        menuId = req.body.menu_item.menuId;
+  const menuSql = 'SELECT * FROM Menu WHERE Menu.id = $menuId';
+  const menuValues = {$menuId: menuId};
+  db.get(menuSql, menuValues, (error, menu) => {
     if (error) {
       next(error);
     } else {
-      if (!name || !menu_itemNumber || !publicationDate || !artist) {
+      if (!name || !description || !inventory || !price || !menu) {
         return res.sendStatus(400);
       }
 
-      const sql = 'INSERT INTO MenuItem (name, menu_item_number, publication_date, employee_id, menu_id)' +
-          'VALUES ($name, $menu_itemNumber, $publicationDate, $employeeId, $menuId)';
+      const sql = 'INSERT INTO MenuItem (name, description, inventory, price, menu_id)' +
+          'VALUES ($name, $description, $inventory, $price, $menuId)';
       const values = {
         $name: name,
-        $menu_itemNumber: menu_itemNumber,
-        $publicationDate: publicationDate,
-        $employeeId: employeeId,
-        $menuId: req.params.menuId
+        $description: description,
+        $inventory: inventory,
+        $price: price,
+        $menuItemId: req.params.menuItemId
       };
 
       db.run(sql, values, function(error) {
@@ -75,28 +78,29 @@ menu_itemsRouter.post('/', (req, res, next) => {
 menu_itemsRouter.put('/:menu_itemId', (req, res, next) => {
   //console.log('made it to menu_itemsRouter.put/:menu_itemId')
   const name = req.body.menu_item.name,
-        menu_itemNumber = req.body.menu_item.menu_itemNumber,
-        publicationDate = req.body.menu_item.publicationDate,
-        artistId = req.body.menu_item.artistId;
-  const employeeSql = 'SELECT * FROM Employee WHERE Employee.id = $employeeId';
-  const employeeValues = {$employeeId: employeeId};
-  db.get(employeeSql, employeeValues, (error, employee) => {
+        description = req.body.menu_item.description,
+        inventory = req.body.menu_item.inventory,
+        price = req.body.menu_item.price,
+        menuId = req.body.menu_item.menuId;
+        const menuSql = 'SELECT * FROM Menu WHERE Menu.id = $menuId';
+        const menuValues = {$menuId: menuId};
+  db.get(menuSql, menuValues, (error, menu) => {
     if (error) {
       next(error);
     } else {
-      if (!name || !menu_itemNumber || !publicationDate || !employee) {
+      if (!name || !description || !inventory || !price || !menu) {
         return res.sendStatus(400);
       }
 
-      const sql = 'UPDATE MenuItem SET name = $name, menu_item_number = $menu_itemNumber, ' +
-          'publication_date = $publicationDate, employee_id = $employeeId ' +
+      const sql = 'UPDATE MenuItem SET name = $name, description = $description, ' +
+          'inventory = $inventory, price = $price ' +
           'WHERE MenuItem.id = $menu_itemId';
       const values = {
         $name: name,
-        $menu_itemNumber: menu_itemNumber,
-        $publicationDate: publicationDate,
-        $employeeId: employeeId,
-        $menu_itemId: req.params.menu_itemId
+        $description: description,
+        $inventory: inventory,
+        $price: price,
+        $menuItemId: req.params.menuItemId
       };
 
       db.run(sql, values, function(error) {
