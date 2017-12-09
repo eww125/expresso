@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
-  //console.log('made it to timesheetsRouter.param timesheetId')
+  console.log('made it to timesheetsRouter.param timesheetId')
   const sql = 'SELECT * FROM Timesheet WHERE Timesheet.id = $timesheetId';
   const values = {$timesheetId: timesheetId};
   db.get(sql, values, (error, timesheet) => {
@@ -20,7 +20,7 @@ timesheetsRouter.param('timesheetId', (req, res, next, timesheetId) => {
 });
 
 timesheetsRouter.get('/', (req, res, next) => {
-  //console.log('made it to timesheetsRouter.get/')
+  console.log('made it to timesheetsRouter.get/')
   const sql = 'SELECT * FROM Timesheet WHERE Timesheet.employee_id = $employeeId';
   const values = { $employeeId: req.params.employeeId};
   db.all(sql, values, (error, timesheets) => {
@@ -33,11 +33,15 @@ timesheetsRouter.get('/', (req, res, next) => {
 });
 
 timesheetsRouter.post('/', (req, res, next) => {
-  //console.log('made it to timesheetsRouter.post/')
+  console.log('made it to timesheetsRouter.post/')
   const hours = req.body.timesheet.hours,
         rate = req.body.timesheet.rate,
         date = req.body.timesheet.date,
         employeeId = req.body.timesheet.employeeId;
+  console.log('req.body.timesheet.hours=' + req.body.timesheet.hours)
+  console.log('req.body.timesheet.rate=' + req.body.timesheet.rate)
+  console.log('req.body.timesheet.date=' + req.body.timesheet.date)
+  console.log('req.body.timesheet.employeeId=' + req.body.timesheet.employeeId)
   const employeeSql = 'SELECT * FROM Employee WHERE Employee.id = $employeeId';
   const employeeValues = {$employeeId: employeeId};
   db.get(employeeSql, employeeValues, (error, employee) => {
@@ -47,13 +51,13 @@ timesheetsRouter.post('/', (req, res, next) => {
       if (!hours || !rate || !date || !employee) {
         return res.sendStatus(400);
       }
-  console.log('hours=' + hours)
-  console.log('rate=' + rate)
-  console.log('date=' + date)
-  console.log('employeeId=' + employeeId)
+  //console.log('hours=' + hours)
+  //console.log('rate=' + rate)
+  //console.log('date=' + date)
+  //console.log('employeeId=' + employeeId)
       const sql = 'INSERT INTO Timesheet (hours, rate, date, employee_id) ' +
           'VALUES ($hours, $rate, $date, $employeeId)';
-  console.log('sql=' + sql)
+  //console.log('sql=' + sql)
       const values = {
         $hours: hours,
         $rate: rate,
